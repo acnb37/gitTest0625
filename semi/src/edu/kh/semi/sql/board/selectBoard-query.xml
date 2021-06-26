@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="login">
+SELECT MEMBER_NO,MEMBER_ID,MEMBER_NM,MEMBER_PHONE,
+MEMBER_EMAIL,MEMBER_ADDR,ENROLL_DATE,MEMBER_GRADE
+FROM MEMBER
+WHERE MEMBER_ID =?
+AND MEMBER_PW = ?
+AND MEMBER_STATUS='Y'
+</entry>
+
+<entry key="signUp">
+INSERT INTO MEMBER
+VALUES(SEQ_MNO.NEXTVAL,
+?,?,?,?,
+?,?,
+DEFAULT,DEFAULT,'G')
+</entry>
+<entry key="idDupCheck">
+SELECT COUNT(*) FROM MEMBER
+WHERE MEMBER_STATUS='Y'
+AND MEMBER_ID = ?
+</entry>
+<entry key="memberUpdate">
+UPDATE MEMBER 
+SET MEMBER_EMAIL =?
+,MEMBER_PHONE = ? 
+,MEMBER_ADDR = ?
+WHERE MEMBER_NO=?
+</entry>
+<entry key="changePwd">
+UPDATE MEMBER SET MEMBER_PW = ? 
+WHERE MEMBER_PW= ? 
+AND MEMBER_NO = ?
+</entry>
+<entry key="secession">
+UPDATE MEMBER SET member_status='N' 
+WHERE MEMBER_NO = ? 
+AND MEMBER_PW = ?
+</entry>
+</properties>
