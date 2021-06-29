@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import edu.kh.semi.board.model.vo.Attachment;
 import edu.kh.semi.board.model.vo.Board;
 import edu.kh.semi.board.model.vo.Pagination;
 import edu.kh.semi.member.model.dao.MemberDAO;
@@ -101,6 +102,79 @@ public class SelectBoardDAO {
 			close(pstmt);
 		}
 		return boardList;
+	}
+	/**게시글 상세조회 DAO
+	 * @param conn
+	 * @param boardNo
+	 * @return board
+	 * @throws Exception
+	 */
+	public Board selectBoard(Connection conn, int boardNo)throws Exception {
+		// TODO Auto-generated method stub
+		Board board = null;
+		String sql = prop.getProperty("selectBoard");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, boardNo);
+			rs = pstmt.executeQuery();
+			
+			board = new Board();
+			
+			//board에 필드 중 atList에 값을 저장할 수 있도록 List 객체 하나를 생성하여 셋팅
+			board.setAtList(new ArrayList<Attachment>());
+			
+			boolean flag = true;// 아래 반복문 첫 반복을 하고 있을 때 true 아닐 때 false를 나타내는 신호
+			
+			
+			
+			while(rs.next()) {
+				
+				if(flag) {
+				board.setBoardNo(rs.getInt("BOARD_NO"));
+				board.setCategoryName(rs.getString("CATEGORY_NM"));
+				board.setBoardTitle(rs.getString("BOARD_TITLE"));
+				board.setMemberName(rs.getString("MEMBER_NM"));
+				board.setReadCount(rs.getInt("READ_COUNT"));
+				board.setCreateDate(rs.getTimestamp("CREATE_DT"));
+				board.setBoardContent(rs.getString("BOARD_CONTENT"));
+				board.setMemberNo(rs.getInt("MEMBER_NO"));
+				board.setModifyDate(rs.getTimestamp("MODIFY_DT"));
+				flag=false;
+				}
+				//조회된 파일 관련 정보를 저장할 객체 선언(경로, 이름, 레벨)
+				Attachment at = new Attachment();
+				at.setFilePath(rs.getString("FILE_PATH"));
+				at.setFileName(rs.getString("FILE_NM"));
+				at.setFileLevel(rs.getInt("FILE_LEVEL"));
+				
+				//값 세팅이 완료된 Attachment 객체를
+				//board의 atList에 추가
+				board.getAtList().add(at);
+			}
+		}finally {
+			close(rs);
+			close(pstmt);
+		}
+		return board;
+	}
+	/** 조회수 증가
+	 * @param conn
+	 * @param boardNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int increaseReadCount(Connection conn, int boardNo) throws Exception{
+		// TODO Auto-generated method stub
+		int result =0;
+		String sql = prop.getProperty("increaseReadCount");
+		try {
+			pstmt =conn.prepareStatement(sql);
+			pstmt.setInt(1, boardNo);
+			result = pstmt.executeUpdate();
+		}finally {
+			close(pstmt);
+		}
+		return result;
 	}
 	
 }
