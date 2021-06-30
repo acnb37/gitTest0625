@@ -21,6 +21,10 @@ public class Board {
 	private int memberNo;		//작성회원 번호
 	private Timestamp modifyDate;//마지막수정일
 	private List<Attachment> atList;//게시글에 첨부된 파일(이미지) 목록
+	
+	
+	//삽입 시 필요한 필드 추가
+	private int categoryCode;
 	public Board() {
 		// TODO Auto-generated constructor stub
 	}
@@ -96,13 +100,22 @@ public class Board {
 	public void setAtList(List<Attachment> atList) {
 		this.atList = atList;
 	}
+	public int getCategoryCode() {
+		return categoryCode;
+	}
+	public void setCategoryCode(int categoryCode) {
+		this.categoryCode = categoryCode;
+	}
 	@Override
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
 				+ ", filePath=" + filePath + ", fileName=" + fileName + ", boardContent=" + boardContent + ", memberNo="
-				+ memberNo + ", modifyDate=" + modifyDate + ", atList=" + atList + "]";
+				+ memberNo + ", modifyDate=" + modifyDate + ", atList=" + atList + ", categoryCode=" + categoryCode
+				+ "]";
 	}
+
+	
 
 	
 

@@ -157,8 +157,8 @@
 				
 				<hr>
 				<!-- Content -->
-				<div id="board-content"></div>
-				${board.boardContent}
+				<div id="board-content">${board.boardContent}</div>
+				
 
 				<hr>
 				 
@@ -168,7 +168,7 @@
 						<button id="deleteBtn" class="btn btn-primary float-right">삭제</button> 
 						<button id="updateBtn" class="btn btn-primary float-right">수정</button> 
 					
-						<a href="#" class="btn btn-primary float-right">목록으로</a>
+						<a href="list?type=${param.type}&cp=${param.cp}" class="btn btn-primary float-right">목록으로</a>
 				</div>
 				
 				
