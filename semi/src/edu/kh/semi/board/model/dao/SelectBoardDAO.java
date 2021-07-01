@@ -41,6 +41,7 @@ public class SelectBoardDAO {
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, boardType);
+			pstmt.setInt(2, boardType);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				map.put("listCount",rs.getInt(1));

@@ -27,9 +27,10 @@ public class SelectBoardService {
 		
 		close(conn);
 		
-		int listCount = (int)map.get("listCount");
+		int listCount = map.get("listCount") != null ? (int)map.get("listCount") : 0;
+
 		String boardName = (String)map.get("boardName");
-		
+		System.out.println(boardName);
 		return new Pagination(cp, listCount, boardType, boardName);
 	}
 

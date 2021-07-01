@@ -78,6 +78,7 @@ public class SelectBoardController extends HttpServlet {
 				List<Board> boardList = service.selectBoardList(pagination);
 				
 				//pagination, boardList를 request에 속성으로 추가한 후 boardList.jsp로 forward
+				
 				request.setAttribute("pagination", pagination);
 				request.setAttribute("boardList", boardList);
 				
