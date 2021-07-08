@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.kh.semi.board.model.service.ReplyService;
 import edu.kh.semi.board.model.service.SelectBoardService;
 import edu.kh.semi.board.model.vo.Board;
 import edu.kh.semi.board.model.vo.Pagination;
+import edu.kh.semi.board.model.vo.Reply;
 
 //MVC (Model View Controller)
 
@@ -70,12 +72,33 @@ public class SelectBoardController extends HttpServlet {
 			if(command.equals("list")) {
 				int boardType = Integer.parseInt(request.getParameter("type"));
 				
-				//페이징 처리를 위한 여러 정보를 담고있는 객체 Pagination 생성
-				Pagination pagination = service.getPagination(cp,boardType);
-				//System.out.println(pagination);
+				//------------검색 추가---------------
+				Pagination pagination = null;
+				List<Board> boardList= null;
+				//만약에 검색을 하지 않았을 경우
+				if(request.getParameter("sv")==null) {
+					//검색어가 없을 경우 
+					//페이징 처리를 위한 여러 정보를 담고있는 객체 Pagination 생성
+					pagination = service.getPagination(cp,boardType);
+					//System.out.println(pagination);
+					
+					// pagination을 이용하여 게시글 목록에 보여져야할 내용을 DB에서 조회
+					boardList = service.selectBoardList(pagination);
+				}else {// 검색어가 있을 경우
+					String searchKey = request.getParameter("sk");
+					String searchValue = request.getParameter("sv");
+					
+					pagination = service.getPagination(cp, boardType,searchKey,searchValue);
+					
+					boardList = service.selectBoardList(pagination,searchKey,searchValue);
+					
+				}
 				
-				// pagination을 이용하여 게시글 목록에 보여져야할 내용을 DB에서 조회
-				List<Board> boardList = service.selectBoardList(pagination);
+				
+				//------------검색종료---------------
+				
+				
+				
 				
 				//pagination, boardList를 request에 속성으로 추가한 후 boardList.jsp로 forward
 				
@@ -93,7 +116,10 @@ public class SelectBoardController extends HttpServlet {
 			else if(command.equals("view")) {
 				int boardNo= Integer.parseInt(request.getParameter("no"));
 				Board board = service.selectBoard(boardNo);
-				System.out.println(board);
+				//해당 게시글 댓글 목록 조회
+				List<Reply> rList = new ReplyService().selectList(boardNo);
+				//System.out.println(board);
+				request.setAttribute("rList", rList);
 				request.setAttribute("board", board);
 				path="/WEB-INF/views/board/boardView.jsp";
 				view = request.getRequestDispatcher(path);

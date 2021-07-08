@@ -169,11 +169,21 @@
 						<button id="deleteBtn" class="btn btn-primary float-right mr-2">삭제</button> 
 						<button id="updateBtn" class="btn btn-primary float-right mr-2" onclick="fnRequest('updateForm')">수정</button> 
 					</c:if>
-						<a href="list?type=${param.type}&cp=${param.cp}" class="btn btn-primary float-right mr-2">목록으로</a>
+					
+					<%-- 검색 상태 유지를 위한 쿼리스트링용 변수선언 --%>
+					<c:if test="${!empty param.sk && !empty param.sv}">
+					<%--검색은 게시글 목록 조회에 단순히 sk,sv 파라미터를 추가한것 
+						->목록 조회 결과 환면을 만들기 위해 boardList.jsp로 요청 위임 되기 때문에
+						request객체가 유지되고, 파라미터도 유지된다.
+					--%>
+					<c:set var="searchStr" value="&sk=${param.sk}&sv=${param.sv}"/>
+					</c:if>
+						<a href="list?type=${param.type}&cp=${param.cp}${searchStr}" class="btn btn-primary float-right mr-2">목록으로</a>
 				</div>
 				
 				
 				<%-- 댓글 영역 --%>
+				<jsp:include page="reply.jsp"></jsp:include>
 			</div>
 
 

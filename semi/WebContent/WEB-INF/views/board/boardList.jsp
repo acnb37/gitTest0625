@@ -81,7 +81,14 @@
 							<th>작성일</th>
 						</tr>
 					</thead>
-					
+					<%-- 검색 상태 유지를 위한 쿼리스트링용 변수선언 --%>
+					<c:if test="${!empty param.sk && !empty param.sv}">
+					<%--검색은 게시글 목록 조회에 단순히 sk,sv 파라미터를 추가한것 
+						->목록 조회 결과 환면을 만들기 위해 boardList.jsp로 요청 위임 되기 때문에
+						request객체가 유지되고, 파라미터도 유지된다.
+					--%>
+					<c:set var="searchStr" value="&sk=${param.sk}&sv=${param.sv}"/>
+					</c:if>
 					<%-- 게시글 목록 출력 --%>
 					<tbody>
 				
@@ -102,7 +109,7 @@
 									<td>${board.categoryName }</td>
 								
 									<td class="boardTitle">
-									<a href="view?no=${board.boardNo}&cp=${pagination.currentPage}&type=${pagination.boardType}">
+									<a href="view?no=${board.boardNo}&cp=${pagination.currentPage}&type=${pagination.boardType}${searchStr}">
 									<%--썸네일 출력 --%>
 									<c:choose>
 									<%--썸네일 이미지가 없는 경우 --%>
@@ -163,8 +170,8 @@
 			<%---------------------- Pagination start----------------------%>
 			<%--페이징 처리 시 주소를 쉽게 작성할 수 있도록 필요한 변수를 미리 선언 --%>
 			<c:set var="pageURL" value="list?type=${pagination.boardType }"/>
-			<c:set var="prev" value="${pageURL}&cp=${pagination.prevPage }"/>
-			<c:set var="next" value="${pageURL}&cp=${pagination.nextPage }"/>
+			<c:set var="prev" value="${pageURL}&cp=${pagination.prevPage }${searchStr}"/>
+			<c:set var="next" value="${pageURL}&cp=${pagination.nextPage }${searchStr}"/>
 			
 			
 			
@@ -176,7 +183,7 @@
 				</c:if>	
 				<%--현재 페이지가 2페이지 초과인 경우 이전페이지 --%>			
 				<c:if test = "${pagination.currentPage >2 }">
-					<li><a class="page-link" href="${pageURL}&cp=${pagination.currentPage-1}">&lt;</a></li>
+					<li><a class="page-link" href="${pageURL}&cp=${pagination.currentPage-1}${searchStr}">&lt;</a></li>
 				</c:if>
 				
 				
@@ -189,14 +196,14 @@
 						</c:when>
 						
 						<c:otherwise>
-						<li><a class="page-link" href="${pageURL}&cp=${p}">${p}</a></li>
+						<li><a class="page-link" href="${pageURL}&cp=${p}${searchStr}">${p}</a></li>
 						</c:otherwise>
 					</c:choose>
 					
 				</c:forEach>
 				<%--현재 페이지가 마지막 페이지 미만인 경우 --%>			
 				<c:if test = "${pagination.currentPage <pagination.maxPage }">
-				<li><a class="page-link" href="${pageURL}&cp=${pagination.currentPage+1}">&gt;</a></li>
+				<li><a class="page-link" href="${pageURL}&cp=${pagination.currentPage+1}${searchStr}">&gt;</a></li>
 				</c:if>		
 				
 				<%--현재 페이지가 마지막 페이지 미만인 경우 --%>			
@@ -213,6 +220,7 @@
 			<!-- 검색창 -->
 			<div class="my-5">
 				<form action="#" method="GET" class="text-center" id="searchForm">
+					<input type="hidden" name="type" value="${pagination.boardType}">
 					<select name="sk" class="form-control" style="width: 100px; display: inline-block;">
 						<option value="title">글제목</option>
 						<option value="content">내용</option>
@@ -229,7 +237,27 @@
 
 
 	<script>
-	
+    // 검색 내용이 있을 경우 검색창에 해당 내용을 작성해두는 기능
+    (function(){
+       var searchKey = "${param.sk}"; 
+       // 파라미터 중 sk가 있을 경우   ex)  "abc"
+       // 파라미터 중 sk가 없을 경우   ex)  ""
+       var searchValue = "${param.sv}";
+       
+       // 검색창 select의 option을 반복 접근
+       $("select[name=sk] > option").each(function(index, item){
+          // index : 현재 접근중인 요소의 인덱스
+          // item : 현재 접근중인 요소
+                   // content            content
+          if( $(item).val() == searchKey  ){
+             $(item).prop("selected", true);
+          }
+       });      
+       
+       // 검색어 입력창에 searcValue 값 출력
+       $("input[name=sv]").val(searchValue);
+    })();
+    
 	</script>
 	
 </body>
